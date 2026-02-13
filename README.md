@@ -31,6 +31,49 @@ source .venv/bin/activate
 pip install -e '.[dev]'
 ```
 
+
+## Quickstart (copiar y pegar)
+
+### Opción A — Ejecutar todo de una vez
+> Copia este bloque completo en tu terminal:
+
+```bash
+cd /workspace/tennis
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e '.[dev]'
+
+# Ingesta + ETL + base local
+tennis-analytics ingest --years 2023,2024,2025 --source jeff
+
+# Reporte de un jugador
+tennis-analytics report-player --player "Carlos Alcaraz"
+
+# Resumen Top-100
+tennis-analytics report-top100
+
+# Cobertura full/proxy
+tennis-analytics report-coverage
+```
+
+### Opción B — Si `tennis-analytics` no existe en tu PATH
+> Usa estos comandos equivalentes:
+
+```bash
+cd /workspace/tennis
+source .venv/bin/activate
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+python -m tennis_analytics.cli report-top100
+python -m tennis_analytics.cli report-coverage
+```
+
+### Archivos que debes ver al final
+```bash
+ls -lah db/tennis.duckdb reports/top100_summary.csv reports/coverage_report.md reports/players/carlos_alcaraz.md
+```
+
 ## Guía para principiantes (paso a paso)
 
 > Si eres principiante, sigue estos pasos **exactamente en orden**.
