@@ -36,6 +36,25 @@ pip install -e '.[dev]'
 
 ## Si te está dando errores todo el rato (haz esto tal cual)
 
+### Opción más fácil (desde cualquier carpeta)
+Copia y pega esto en terminal normal (`$` o `%`):
+
+```bash
+bash scripts/run_rescate_anywhere.sh
+```
+
+Si estás fuera del repo y te dice que no encuentra el script, usa este bloque:
+
+```bash
+find ~ -maxdepth 4 -type f -name run_rescate_anywhere.sh 2>/dev/null
+```
+
+Y luego ejecútalo con la ruta que te devuelva, por ejemplo:
+
+```bash
+bash ~/Desktop/tennis/scripts/run_rescate_anywhere.sh
+```
+
 ### Antes de empezar: confirma la ruta del proyecto
 Si te sale `No such file or directory`, significa que **esa ruta no existe en tu Mac**.
 
@@ -64,10 +83,10 @@ Tu línea debe acabar en `$` o `%` (NO en `>>>`).
 ### Paso 3 — Ejecuta un solo comando
 
 ```bash
-cd /RUTA/DE/TU/PROYECTO/tennis && bash scripts/quickstart_rescate.sh
+bash scripts/run_rescate_anywhere.sh
 ```
 
-Eso hace todo automáticamente: entorno virtual, instalación, ingesta y reportes.
+Eso localiza el repo automáticamente y ejecuta el rescate completo.
 
 > ⚠️ **Muy importante:** estos comandos son para la terminal (`$`), **no** para el intérprete de Python (`>>>`).
 >
@@ -210,7 +229,7 @@ ls reports/examples
 ### Error: `SyntaxError` con comandos como `cd`, `pip`, `tennis-analytics`
 Si quieres evitar errores manuales, usa directamente:
 ```bash
-cd /RUTA/DE/TU/PROYECTO/tennis && bash scripts/quickstart_rescate.sh
+bash scripts/run_rescate_anywhere.sh
 ```
 
 Estás dentro de Python (`>>>`) y no en terminal.
@@ -243,13 +262,19 @@ Si sale `3.11.x`, reemplaza `python3.11` por `python3` en todos los comandos.
 ### Error: `cd /workspace/tennis: No such file or directory`
 Esa ruta era de ejemplo del contenedor, no de tu Mac.
 
-Usa tu ruta real del proyecto. Si no sabes cuál es:
+No uses rutas placeholder (`/TU/RUTA/...`) literalmente.
+Usa este comando automático en su lugar:
 ```bash
-find ~ -maxdepth 3 -type d -name tennis 2>/dev/null
+bash scripts/run_rescate_anywhere.sh
 ```
-Luego entra con `cd` a la que corresponda y ejecuta:
+
+Si no estás dentro del repo y no encuentra el script:
 ```bash
-bash scripts/quickstart_rescate.sh
+find ~ -maxdepth 4 -type f -name run_rescate_anywhere.sh 2>/dev/null
+```
+Ejecuta la ruta devuelta, por ejemplo:
+```bash
+bash ~/Desktop/tennis/scripts/run_rescate_anywhere.sh
 ```
 
 ### Error: `ModuleNotFoundError` (pandas/duckdb/etc)
