@@ -31,6 +31,99 @@ source .venv/bin/activate
 pip install -e '.[dev]'
 ```
 
+## Guía para principiantes (paso a paso)
+
+> Si eres principiante, sigue estos pasos **exactamente en orden**.
+
+### 0) Requisitos previos
+- Tener **Python 3.11** instalado.
+- Tener **internet** para descargar dependencias y datasets.
+
+Comprueba versión de Python:
+```bash
+python3 --version
+```
+Debe mostrar algo como `Python 3.11.x`.
+
+### 1) Entrar al proyecto
+```bash
+cd /workspace/tennis
+```
+
+### 2) Crear entorno virtual
+```bash
+python3.11 -m venv .venv
+```
+
+### 3) Activar entorno virtual
+```bash
+source .venv/bin/activate
+```
+Si funcionó, verás `(.venv)` al inicio de la línea de tu terminal.
+
+### 4) Instalar dependencias
+```bash
+pip install -e '.[dev]'
+```
+
+### 5) Cargar datos + ETL + base DuckDB
+```bash
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+```
+Esto hace:
+- descarga CSVs en `data/raw/`,
+- procesa a `data/processed/`,
+- crea base `db/tennis.duckdb`.
+
+### 6) Generar un reporte de 1 jugador
+```bash
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+```
+Salida esperada (archivos):
+- `reports/players/carlos_alcaraz.md`
+- `reports/players/carlos_alcaraz.json`
+
+### 7) Generar resumen Top-100
+```bash
+python -m tennis_analytics.cli report-top100
+```
+Salida esperada:
+- `reports/top100_summary.csv`
+
+### 8) Generar reportes para todos los Top-100
+```bash
+python -m tennis_analytics.cli report-all-players
+```
+
+### 9) Generar informe de cobertura full/proxy
+```bash
+python -m tennis_analytics.cli report-coverage
+```
+Salida esperada:
+- `reports/coverage_report.md`
+
+### 10) Ver ejemplos ya incluidos
+```bash
+ls reports/examples
+```
+
+## Problemas comunes
+
+### Error: `ModuleNotFoundError` (pandas/duckdb/etc)
+No se instalaron dependencias. Repite:
+```bash
+source .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+### Error por red/proxy al instalar o descargar datos
+Tu entorno no tiene salida a internet o está detrás de proxy. Solución:
+- ejecutar en una máquina con internet,
+- o configurar `HTTP_PROXY`/`HTTPS_PROXY`.
+
+### Error: `Player not found`
+Primero ejecuta `ingest`; luego usa el nombre exactamente como aparece en los datos.
+
 ## Uso CLI
 ```bash
 # 1) Ingesta + ETL + carga a duckdb
