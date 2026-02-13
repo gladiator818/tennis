@@ -1,0 +1,396 @@
+# ATP Top-100 Coach-Ready Performance Reports
+
+Sistema de analítica para generar reportes de fortalezas/debilidades (coach-ready) para jugadores ATP masculinos Top-100.
+
+## Qué incluye
+- Ingesta configurable:
+  - **Open-source (por defecto):** Jeff Sackmann (`tennis_atp`).
+  - **Comercial (placeholder):** interfaz extensible para enriquecer métricas faltantes.
+  - **Sin scraping ATP Tour** por defecto.
+- Pipeline ETL reproducible: `data/raw -> data/processed -> db/tennis.duckdb`.
+- Modelo de datos: `players`, `matches`, `match_stats`, `rankings`.
+- Feature engineering por:
+  - superficie (`Hard`, `Clay`, `Grass`, `Unknown`) + `is_indoor` inferido,
+  - tier (`ATP 250`, `ATP 500`, `ATP 1000`, `Grand Slam`),
+  - período (`52w`, `career`),
+  - contexto (`vs Top10`, `vs Top20`, `tiebreaks`, `deciding sets`, `break points`).
+- Normalización por percentiles y z-scores por superficie.
+- Motor de insights:
+  - reglas interpretables (umbral percentiles),
+  - perfil simple (`serve-bot`, `baseliner`, `all-court`, `counterpuncher`).
+- Salidas:
+  - CLI para jugador individual y Top-100,
+  - export CSV/JSON/Markdown por jugador,
+  - tabla comparativa Top-100,
+  - informe de cobertura de stats completos vs proxy.
+
+## Setup
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+
+## Quickstart (copiar y pegar)
+
+## Diagnóstico ultra simple (para cero experiencia)
+
+> Haz estos pasos **uno por uno** y no pases al siguiente si falla el anterior.
+
+### 1) Sal de Python si ves `>>>`
+```bash
+exit()
+```
+Si ya estás en terminal (`$` o `%`), ignora este paso.
+
+### 2) Comprueba si estás dentro del proyecto
+```bash
+pwd
+ls
+```
+Debes ver un archivo `README.md` y una carpeta `src`.
+
+- Si **sí** los ves: ve al paso 4.
+- Si **no** los ves: sigue paso 3.
+
+### 3) Busca la carpeta del proyecto en tu Mac
+```bash
+find ~ -maxdepth 5 -type f -name README.md 2>/dev/null | grep -i tennis
+```
+Si sale una ruta como `/Users/tuusuario/.../tennis/README.md`, entra a esa carpeta:
+```bash
+cd /Users/tuusuario/.../tennis
+```
+Después ejecuta:
+```bash
+ls
+```
+Ahora sí debes ver `README.md` y `src`.
+
+Si **no sale ninguna ruta**, entonces ese proyecto **no está descargado en tu Mac** todavía.
+
+### 4) Comprueba que existen los scripts
+```bash
+ls scripts
+```
+Debes ver al menos:
+- `quickstart_rescate.sh`
+- `run_rescate_anywhere.sh`
+
+Si no aparecen, estás en una carpeta equivocada.
+
+### 5) Ejecuta el rescate
+```bash
+bash scripts/quickstart_rescate.sh
+```
+
+### 6) Si falla, ejecuta este chequeo y comparte salida
+```bash
+pwd
+ls
+ls scripts
+python3 --version
+```
+
+## Si te está dando errores todo el rato (haz esto tal cual)
+
+> ❗ **No copies rutas de ejemplo literalmente** (`/RUTA/...` o `/workspace/...`).
+> Primero localiza tu carpeta real en tu Mac con el bloque de diagnóstico de abajo.
+
+### Opción más fácil (desde cualquier carpeta)
+Copia y pega esto en terminal normal (`$` o `%`):
+
+```bash
+bash scripts/run_rescate_anywhere.sh
+```
+
+Si estás fuera del repo y te dice que no encuentra el script, usa este bloque:
+
+```bash
+find ~ -maxdepth 4 -type f -name run_rescate_anywhere.sh 2>/dev/null
+```
+
+Y luego ejecútalo con la ruta que te devuelva, por ejemplo:
+
+```bash
+bash ~/Desktop/tennis/scripts/run_rescate_anywhere.sh
+```
+
+### Antes de empezar: confirma la ruta del proyecto
+Si te sale `No such file or directory`, significa que **esa ruta no existe en tu Mac**.
+
+Haz esto:
+```bash
+pwd
+ls
+```
+Busca la carpeta donde está este repo (la que contiene `README.md`). Luego usa esa ruta real en lugar de `/workspace/tennis`.
+
+Ejemplo real:
+```bash
+cd ~/Desktop/tennis
+```
+
+### Paso 1 — Cierra Python si ves `>>>`
+Si tu pantalla termina en `>>>`, escribe esto y Enter:
+
+```bash
+exit()
+```
+
+### Paso 2 — Asegúrate de estar en terminal normal
+Tu línea debe acabar en `$` o `%` (NO en `>>>`).
+
+### Paso 3 — Ejecuta un solo comando
+
+```bash
+bash scripts/run_rescate_anywhere.sh
+```
+
+Eso localiza el repo automáticamente y ejecuta el rescate completo.
+
+> ⚠️ **Muy importante:** estos comandos son para la terminal (`$`), **no** para el intérprete de Python (`>>>`).
+>
+> Si ves `>>>`, sal con `exit()` y pulsa Enter antes de seguir.
+
+### Opción A — Ejecutar todo de una vez
+> Copia este bloque completo en tu terminal:
+
+```bash
+cd /RUTA/DE/TU/PROYECTO/tennis
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e '.[dev]'
+
+# Ingesta + ETL + base local
+tennis-analytics ingest --years 2023,2024,2025 --source jeff
+
+# Reporte de un jugador
+tennis-analytics report-player --player "Carlos Alcaraz"
+
+# Resumen Top-100
+tennis-analytics report-top100
+
+# Cobertura full/proxy
+tennis-analytics report-coverage
+```
+
+### Opción C — Recuperación rápida si te aparece `>>>`
+Si te pasa lo del ejemplo (`NameError`, `SyntaxError`), pega exactamente esto:
+
+```bash
+exit()
+cd /RUTA/DE/TU/PROYECTO/tennis
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e '.[dev]'
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+python -m tennis_analytics.cli report-top100
+python -m tennis_analytics.cli report-coverage
+```
+
+### Opción B — Si `tennis-analytics` no existe en tu PATH
+> Usa estos comandos equivalentes:
+
+```bash
+cd /RUTA/DE/TU/PROYECTO/tennis
+source .venv/bin/activate
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+python -m tennis_analytics.cli report-top100
+python -m tennis_analytics.cli report-coverage
+```
+
+### Archivos que debes ver al final
+```bash
+ls -lah db/tennis.duckdb reports/top100_summary.csv reports/coverage_report.md reports/players/carlos_alcaraz.md
+```
+
+## Guía para principiantes (paso a paso)
+
+> Si eres principiante, sigue estos pasos **exactamente en orden**.
+
+### 0) Requisitos previos
+- Tener **Python 3.11** instalado.
+- Tener **internet** para descargar dependencias y datasets.
+
+Comprueba versión de Python:
+```bash
+python3 --version
+```
+Debe mostrar algo como `Python 3.11.x`.
+
+### 1) Entrar al proyecto
+```bash
+cd /RUTA/DE/TU/PROYECTO/tennis
+```
+
+### 2) Crear entorno virtual
+```bash
+python3.11 -m venv .venv
+```
+
+### 3) Activar entorno virtual
+```bash
+source .venv/bin/activate
+```
+Si funcionó, verás `(.venv)` al inicio de la línea de tu terminal.
+
+### 4) Instalar dependencias
+```bash
+pip install -e '.[dev]'
+```
+
+### 5) Cargar datos + ETL + base DuckDB
+```bash
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+```
+Esto hace:
+- descarga CSVs en `data/raw/`,
+- procesa a `data/processed/`,
+- crea base `db/tennis.duckdb`.
+
+### 6) Generar un reporte de 1 jugador
+```bash
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+```
+Salida esperada (archivos):
+- `reports/players/carlos_alcaraz.md`
+- `reports/players/carlos_alcaraz.json`
+
+### 7) Generar resumen Top-100
+```bash
+python -m tennis_analytics.cli report-top100
+```
+Salida esperada:
+- `reports/top100_summary.csv`
+
+### 8) Generar reportes para todos los Top-100
+```bash
+python -m tennis_analytics.cli report-all-players
+```
+
+### 9) Generar informe de cobertura full/proxy
+```bash
+python -m tennis_analytics.cli report-coverage
+```
+Salida esperada:
+- `reports/coverage_report.md`
+
+### 10) Ver ejemplos ya incluidos
+```bash
+ls reports/examples
+```
+
+## Problemas comunes
+
+### Error: `SyntaxError` con comandos como `cd`, `pip`, `tennis-analytics`
+Si quieres evitar errores manuales, usa directamente:
+```bash
+bash scripts/run_rescate_anywhere.sh
+```
+
+Estás dentro de Python (`>>>`) y no en terminal.
+
+Solución:
+```bash
+exit()
+```
+Luego verifica que el prompt sea normal (`$` o `%`) y vuelve a ejecutar comandos.
+
+### macOS muestra `xcode-select: No developer tools were found`
+No es un error de este proyecto: te faltan herramientas de línea de comandos en macOS.
+
+1. Instálalas:
+```bash
+xcode-select --install
+```
+2. Cierra y abre la terminal.
+3. Repite el Quickstart.
+
+### Error: `python3.11: command not found`
+Tu mac no tiene Python 3.11 instalado (o está en otra ruta).
+
+Prueba primero:
+```bash
+python3 --version
+```
+Si sale `3.11.x`, reemplaza `python3.11` por `python3` en todos los comandos.
+
+### Error: `cd /workspace/tennis: No such file or directory`
+Esa ruta era de ejemplo del contenedor, no de tu Mac.
+
+No uses rutas placeholder (`/TU/RUTA/...`) literalmente.
+Usa este comando automático en su lugar:
+```bash
+bash scripts/run_rescate_anywhere.sh
+```
+
+Si no estás dentro del repo y no encuentra el script:
+```bash
+find ~ -maxdepth 4 -type f -name run_rescate_anywhere.sh 2>/dev/null
+```
+Ejecuta la ruta devuelta, por ejemplo:
+```bash
+bash ~/Desktop/tennis/scripts/run_rescate_anywhere.sh
+```
+
+### Error: `ModuleNotFoundError` (pandas/duckdb/etc)
+No se instalaron dependencias. Repite:
+```bash
+source .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+### Error por red/proxy al instalar o descargar datos
+Tu entorno no tiene salida a internet o está detrás de proxy. Solución:
+- ejecutar en una máquina con internet,
+- o configurar `HTTP_PROXY`/`HTTPS_PROXY`.
+
+### Error: `Player not found`
+Primero ejecuta `ingest`; luego usa el nombre exactamente como aparece en los datos.
+
+## Uso CLI
+```bash
+# 1) Ingesta + ETL + carga a duckdb
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+
+# 2) Reporte jugador
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+
+# 3) Reportes Top-100
+python -m tennis_analytics.cli report-top100
+python -m tennis_analytics.cli report-all-players
+
+# 4) Cobertura full/proxy
+python -m tennis_analytics.cli report-coverage
+```
+
+## Métricas
+### Full (si hay match_stats)
+- `spw_pct`, `rpw_pct`, `bp_saved_pct`, `bp_converted_pct`, `tb_win_pct`, `deciding_set_win_pct`, `win_pct`.
+
+### Proxy (si faltan stats detallados)
+- Se mantiene `win_pct`, `tb_win_pct`, `deciding_set_win_pct`, segmentos por superficie/tier/contexto.
+- `metric_mode` marca explícitamente `full` o `proxy` según cobertura de partidos completos.
+
+## Cobertura y limitaciones
+- `reports/coverage_report.md` muestra `% partidos con stats completos` por jugador y tier.
+- Métricas no disponibles sin feed comercial/point-by-point:
+  - hold% y break% exactos por juegos de servicio/retorno,
+  - presión por punto/shot-quality.
+- Para cubrir faltantes, implementar `CommercialApiSource`.
+
+## Fuentes y licencias
+- Datos base: Jeff Sackmann tennis datasets (open-source, revisar licencia y términos del repo original).
+- APIs comerciales: sujetas a licencia del proveedor.
+
+## Ejemplos de reportes
+Se incluyen 3 reportes de ejemplo en `reports/examples/`:
+- `novak_djokovic.md`
+- `carlos_alcaraz.md`
+- `jannik_sinner.md`
