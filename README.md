@@ -36,6 +36,21 @@ pip install -e '.[dev]'
 
 ## Si te está dando errores todo el rato (haz esto tal cual)
 
+### Antes de empezar: confirma la ruta del proyecto
+Si te sale `No such file or directory`, significa que **esa ruta no existe en tu Mac**.
+
+Haz esto:
+```bash
+pwd
+ls
+```
+Busca la carpeta donde está este repo (la que contiene `README.md`). Luego usa esa ruta real en lugar de `/workspace/tennis`.
+
+Ejemplo real:
+```bash
+cd ~/Desktop/tennis
+```
+
 ### Paso 1 — Cierra Python si ves `>>>`
 Si tu pantalla termina en `>>>`, escribe esto y Enter:
 
@@ -49,7 +64,7 @@ Tu línea debe acabar en `$` o `%` (NO en `>>>`).
 ### Paso 3 — Ejecuta un solo comando
 
 ```bash
-cd /workspace/tennis && bash scripts/quickstart_rescate.sh
+cd /RUTA/DE/TU/PROYECTO/tennis && bash scripts/quickstart_rescate.sh
 ```
 
 Eso hace todo automáticamente: entorno virtual, instalación, ingesta y reportes.
@@ -62,7 +77,7 @@ Eso hace todo automáticamente: entorno virtual, instalación, ingesta y reporte
 > Copia este bloque completo en tu terminal:
 
 ```bash
-cd /workspace/tennis
+cd /RUTA/DE/TU/PROYECTO/tennis
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -86,7 +101,7 @@ Si te pasa lo del ejemplo (`NameError`, `SyntaxError`), pega exactamente esto:
 
 ```bash
 exit()
-cd /workspace/tennis
+cd /RUTA/DE/TU/PROYECTO/tennis
 python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -101,7 +116,7 @@ python -m tennis_analytics.cli report-coverage
 > Usa estos comandos equivalentes:
 
 ```bash
-cd /workspace/tennis
+cd /RUTA/DE/TU/PROYECTO/tennis
 source .venv/bin/activate
 python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
 python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
@@ -130,7 +145,7 @@ Debe mostrar algo como `Python 3.11.x`.
 
 ### 1) Entrar al proyecto
 ```bash
-cd /workspace/tennis
+cd /RUTA/DE/TU/PROYECTO/tennis
 ```
 
 ### 2) Crear entorno virtual
@@ -195,7 +210,7 @@ ls reports/examples
 ### Error: `SyntaxError` con comandos como `cd`, `pip`, `tennis-analytics`
 Si quieres evitar errores manuales, usa directamente:
 ```bash
-cd /workspace/tennis && bash scripts/quickstart_rescate.sh
+cd /RUTA/DE/TU/PROYECTO/tennis && bash scripts/quickstart_rescate.sh
 ```
 
 Estás dentro de Python (`>>>`) y no en terminal.
@@ -224,6 +239,18 @@ Prueba primero:
 python3 --version
 ```
 Si sale `3.11.x`, reemplaza `python3.11` por `python3` en todos los comandos.
+
+### Error: `cd /workspace/tennis: No such file or directory`
+Esa ruta era de ejemplo del contenedor, no de tu Mac.
+
+Usa tu ruta real del proyecto. Si no sabes cuál es:
+```bash
+find ~ -maxdepth 3 -type d -name tennis 2>/dev/null
+```
+Luego entra con `cd` a la que corresponda y ejecuta:
+```bash
+bash scripts/quickstart_rescate.sh
+```
 
 ### Error: `ModuleNotFoundError` (pandas/duckdb/etc)
 No se instalaron dependencias. Repite:
