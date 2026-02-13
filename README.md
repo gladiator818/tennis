@@ -34,6 +34,10 @@ pip install -e '.[dev]'
 
 ## Quickstart (copiar y pegar)
 
+> ⚠️ **Muy importante:** estos comandos son para la terminal (`$`), **no** para el intérprete de Python (`>>>`).
+>
+> Si ves `>>>`, sal con `exit()` y pulsa Enter antes de seguir.
+
 ### Opción A — Ejecutar todo de una vez
 > Copia este bloque completo en tu terminal:
 
@@ -55,6 +59,22 @@ tennis-analytics report-top100
 
 # Cobertura full/proxy
 tennis-analytics report-coverage
+```
+
+### Opción C — Recuperación rápida si te aparece `>>>`
+Si te pasa lo del ejemplo (`NameError`, `SyntaxError`), pega exactamente esto:
+
+```bash
+exit()
+cd /workspace/tennis
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e '.[dev]'
+python -m tennis_analytics.cli ingest --years 2023,2024,2025 --source jeff
+python -m tennis_analytics.cli report-player --player "Carlos Alcaraz"
+python -m tennis_analytics.cli report-top100
+python -m tennis_analytics.cli report-coverage
 ```
 
 ### Opción B — Si `tennis-analytics` no existe en tu PATH
@@ -151,6 +171,34 @@ ls reports/examples
 ```
 
 ## Problemas comunes
+
+### Error: `SyntaxError` con comandos como `cd`, `pip`, `tennis-analytics`
+Estás dentro de Python (`>>>`) y no en terminal.
+
+Solución:
+```bash
+exit()
+```
+Luego verifica que el prompt sea normal (`$` o `%`) y vuelve a ejecutar comandos.
+
+### macOS muestra `xcode-select: No developer tools were found`
+No es un error de este proyecto: te faltan herramientas de línea de comandos en macOS.
+
+1. Instálalas:
+```bash
+xcode-select --install
+```
+2. Cierra y abre la terminal.
+3. Repite el Quickstart.
+
+### Error: `python3.11: command not found`
+Tu mac no tiene Python 3.11 instalado (o está en otra ruta).
+
+Prueba primero:
+```bash
+python3 --version
+```
+Si sale `3.11.x`, reemplaza `python3.11` por `python3` en todos los comandos.
 
 ### Error: `ModuleNotFoundError` (pandas/duckdb/etc)
 No se instalaron dependencias. Repite:
