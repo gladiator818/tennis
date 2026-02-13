@@ -34,7 +34,69 @@ pip install -e '.[dev]'
 
 ## Quickstart (copiar y pegar)
 
+## Diagnóstico ultra simple (para cero experiencia)
+
+> Haz estos pasos **uno por uno** y no pases al siguiente si falla el anterior.
+
+### 1) Sal de Python si ves `>>>`
+```bash
+exit()
+```
+Si ya estás en terminal (`$` o `%`), ignora este paso.
+
+### 2) Comprueba si estás dentro del proyecto
+```bash
+pwd
+ls
+```
+Debes ver un archivo `README.md` y una carpeta `src`.
+
+- Si **sí** los ves: ve al paso 4.
+- Si **no** los ves: sigue paso 3.
+
+### 3) Busca la carpeta del proyecto en tu Mac
+```bash
+find ~ -maxdepth 5 -type f -name README.md 2>/dev/null | grep -i tennis
+```
+Si sale una ruta como `/Users/tuusuario/.../tennis/README.md`, entra a esa carpeta:
+```bash
+cd /Users/tuusuario/.../tennis
+```
+Después ejecuta:
+```bash
+ls
+```
+Ahora sí debes ver `README.md` y `src`.
+
+Si **no sale ninguna ruta**, entonces ese proyecto **no está descargado en tu Mac** todavía.
+
+### 4) Comprueba que existen los scripts
+```bash
+ls scripts
+```
+Debes ver al menos:
+- `quickstart_rescate.sh`
+- `run_rescate_anywhere.sh`
+
+Si no aparecen, estás en una carpeta equivocada.
+
+### 5) Ejecuta el rescate
+```bash
+bash scripts/quickstart_rescate.sh
+```
+
+### 6) Si falla, ejecuta este chequeo y comparte salida
+```bash
+pwd
+ls
+ls scripts
+python3 --version
+```
+
 ## Si te está dando errores todo el rato (haz esto tal cual)
+
+> ❗ **No copies rutas de ejemplo literalmente** (`/RUTA/...` o `/workspace/...`).
+> Primero localiza tu carpeta real en tu Mac con el bloque de diagnóstico de abajo.
 
 ### Opción más fácil (desde cualquier carpeta)
 Copia y pega esto en terminal normal (`$` o `%`):
