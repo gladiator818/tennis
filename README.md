@@ -34,6 +34,26 @@ pip install -e '.[dev]'
 
 ## Quickstart (copiar y pegar)
 
+## Si te está dando errores todo el rato (haz esto tal cual)
+
+### Paso 1 — Cierra Python si ves `>>>`
+Si tu pantalla termina en `>>>`, escribe esto y Enter:
+
+```bash
+exit()
+```
+
+### Paso 2 — Asegúrate de estar en terminal normal
+Tu línea debe acabar en `$` o `%` (NO en `>>>`).
+
+### Paso 3 — Ejecuta un solo comando
+
+```bash
+cd /workspace/tennis && bash scripts/quickstart_rescate.sh
+```
+
+Eso hace todo automáticamente: entorno virtual, instalación, ingesta y reportes.
+
 > ⚠️ **Muy importante:** estos comandos son para la terminal (`$`), **no** para el intérprete de Python (`>>>`).
 >
 > Si ves `>>>`, sal con `exit()` y pulsa Enter antes de seguir.
@@ -173,6 +193,11 @@ ls reports/examples
 ## Problemas comunes
 
 ### Error: `SyntaxError` con comandos como `cd`, `pip`, `tennis-analytics`
+Si quieres evitar errores manuales, usa directamente:
+```bash
+cd /workspace/tennis && bash scripts/quickstart_rescate.sh
+```
+
 Estás dentro de Python (`>>>`) y no en terminal.
 
 Solución:
